@@ -10,17 +10,62 @@ namespace ConsoleUI
         static void Main(string[] args)
         {
             //InMemory çalışacak
+            //ProductTest();
+            //CategoryTest();
+
+            ProductManager productManager = new ProductManager(new EfProductDal());
+
+            var result = productManager.GetProductDetails();
+
+            if (result.Success == true)
+            {
+                foreach (var product in result.Data)
+                {
+                    //iki tabloda dataları join ettik ve yan yana listeledik
+                    Console.WriteLine(product.ProductName + " / " + product.CategoryName);
+                }
+            }
+            else
+                Console.WriteLine(result.Message);
+
+        }
+
+        private static void CategoryTest()
+        {
+            CategoryManager categoryManager = new CategoryManager(new EfCategoryDal());
+            foreach (var category in categoryManager.GetAll())
+            {
+                Console.WriteLine(category.CategoryName);
+            }
+        }
+
+        private static void ProductTest()
+        {
+
+
             ProductManager productManager = new ProductManager(new EfProductDal());
             Console.WriteLine("*****Fiyatı 50 ile 100 arasında olanlar*****");
-            foreach (var product in productManager.GetByUnitPrice(50,100))
+            var result = productManager.GetByUnitPrice(50, 100);
+            if (result.Success == true)
             {
-                Console.WriteLine(product.ProductName);
+                foreach (var product in result.Data)
+                {
+                    Console.WriteLine(product.ProductName);
+                }
             }
+            else Console.WriteLine(result.Message);
+
             Console.WriteLine("*****Category Id'si 2 olanlar******");
-            foreach (var product in productManager.GetAllByCategoryId(2))
+            var result1 = productManager.GetAllByCategoryId(2);
+            if (result1.Success == true)
             {
-                Console.WriteLine(product.ProductName);
+                foreach (var product in result1.Data)
+                {
+                    Console.WriteLine(product.ProductName);
+                }
             }
+            else Console.WriteLine(result1.Message);
+
         }
     }
 }
