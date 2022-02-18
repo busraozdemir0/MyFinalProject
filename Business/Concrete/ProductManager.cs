@@ -1,4 +1,5 @@
 ﻿using Business.Abstract;
+using Business.BusinessAspects.Autofac;
 using Business.CCS;
 using Business.Constants;
 using Business.ValidationRules.FluentValidation;
@@ -30,17 +31,19 @@ namespace Business.Concrete
             _categoryService = categoryService;
 
         }
+        [SecuredOperation("product.add,admin")] //claim-iddia
         [ValidationAspect(typeof(ProductValidator))]
         public IResult Add(Product product)
         {
+
             //validation code        
-            IResult result= BusinessRules.Run(CheckIfProductNameExists(product.ProductName), CheckIfProductCountOfCategoryCorrect(product.CategoryId),CheckIfCategoryLimitExceted());
-            if(result!=null) //kurala uymayan bir durum oluşmuşsa
+            IResult result = BusinessRules.Run(CheckIfProductNameExists(product.ProductName), CheckIfProductCountOfCategoryCorrect(product.CategoryId), CheckIfCategoryLimitExceted());
+            if (result != null) //kurala uymayan bir durum oluşmuşsa
             {
                 return result;
-            }            
-                    _productDal.Add(product);
-                    return new SuccessResult(Messages.ProductAdded);
+            }
+            _productDal.Add(product);
+            return new SuccessResult(Messages.ProductAdded);
 
         }
         public IDataResult<List<Product>> GetAll()
@@ -102,7 +105,7 @@ namespace Business.Concrete
         private IResult CheckIfCategoryLimitExceted()
         {
             var result = _categoryService.GetAll();
-            if(result.Data.Count>15)
+            if (result.Data.Count > 15)
             {
                 return new ErrorResult(Messages.CategoryLimitExceted);
             }
