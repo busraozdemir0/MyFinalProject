@@ -10,6 +10,7 @@ using System.Security.Claims;
 using Core.Extensions;
 using System.Linq;
 
+
 namespace Core.Utilities.Security.JWT
 {
     public class JwtHelper : ITokenHelper
